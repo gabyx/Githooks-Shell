@@ -1,0 +1,3 @@
+cmd: githooks/pre-commit/2-check/.check-shell-mistakes.sh
+image:
+  reference: githooks-shell:1.0.0
