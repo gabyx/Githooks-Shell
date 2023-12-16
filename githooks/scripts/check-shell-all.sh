@@ -9,43 +9,73 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 . "$DIR/../common/parallel.sh"
 . "$DIR/../common/shell-check.sh"
 
-dir="${1:-}"
-excludeRegex="${2:-}"
+dryRun="true"
+dir=""
+excludeRegex=""
 regex=${3:-$(getGeneralShellFileRegex)}
+
+function help() {
+    printError "Usage:" \
+        "  [--force]                      : Force the format." \
+        "  [--exclude-regex <regex> ]     : Exclude file with this regex." \
+        "  [--glob-pattern <pattern>]     : Regex pattern to include files." \
+        "   --dir <path>                  : In which directory to check files."
+}
+
+function parseArgs() {
+    local prev=""
+
+    for p in "$@"; do
+        if [ "$p" = "--force" ]; then
+            dryRun="false"
+        elif [ "$p" = "--help" ]; then
+            help
+            return 1
+        elif [ "$p" = "--dir" ]; then
+            true
+        elif [ "$prev" = "--dir" ]; then
+            dir="$p"
+        elif [ "$p" = "--exclude-regex" ]; then
+            true
+        elif [ "$prev" = "--exclude-regex" ]; then
+            excludeRegex="$p"
+        elif [ "$p" = "--regex-pattern" ]; then
+            true
+        elif [ "$prev" = "--regex-pattern" ]; then
+            regex="$p"
+        else
+            printError "! Unknown argument \`$p\`"
+            help
+            return 1
+        fi
+
+        prev="$p"
+    done
+}
+
+parseArgs "$@"
 
 [ -d "$dir" ] || die "Directory '$dir' does not exist."
 
-read -r -p "Shall we really format all files? (No, yes, dry run) [N|y|d]: " what
-
-dryRun="false"
-
-if [ "$what" = "d" ]; then
-    what="y"
-    dryRun="true"
+if [ "$dryRun" = "false" ]; then
+    assertShellCheckVersion "0.8.0" "0.10.0"
+    printInfo "Formatting shell files in dir '$dir'."
+else
+    printInfo "Dry-run formatting shell files in dir '$dir'."
 fi
 
-if [ "$what" = "y" ]; then
+# Format with no config -> search directory tree upwards.
+parallelForDir checkShellFile \
+    "$dir" \
+    "$regex" \
+    "$excludeRegex" \
+    "$dryRun" \
+    "shellcheck" ||
+    die "Checking in '$dir' with '$regex'."
 
-    if [ "$dryRun" = "false" ]; then
-        assertShellCheckVersion "0.8.0" "0.10.0"
-        printInfo "Formatting shell files in dir '$dir'."
-    else
-        printInfo "Dry-run formatting shell files in dir '$dir'."
-    fi
-
-    # Format with no config -> search directory tree upwards.
-    parallelForDir checkShellFile \
-        "$dir" \
-        "$regex" \
-        "$excludeRegex" \
-        "$dryRun" \
-        "shellcheck" ||
-        die "Checking in '$dir' with '$regex'."
-
-    parallelForDir checkShellMistakesFile \
-        "$dir" \
-        "$regex" \
-        "$excludeRegex" \
-        "$dryRun" ||
-        die "Checking in '$dir' with '$regex'."
-fi
+parallelForDir checkShellMistakesFile \
+    "$dir" \
+    "$regex" \
+    "$excludeRegex" \
+    "$dryRun" ||
+    die "Checking in '$dir' with '$regex'."

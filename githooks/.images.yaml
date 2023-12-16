@@ -1,6 +1,6 @@
 version: 1
 images:
-  githooks-shell:1.0.0:
+  githooks-shell:1.1.0:
     build:
       dockerfile: ./githooks/container/Dockerfile
       context: .
