@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 # shellcheck disable=SC2154,SC2086
 function _print() {
     local color="$1"
