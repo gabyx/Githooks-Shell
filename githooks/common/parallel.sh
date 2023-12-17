@@ -79,9 +79,9 @@ function parallelForDir() {
     # Get all files in git and filter include and
     # exclude and take existing files.
     readarray -t -d $'\0' files < <(
-        git ls-files -z \
+        git -C "$dir" ls-files -z \
             --cached --modified --other \
-            --exclude-standard --deduplicate "$dir" |
+            --exclude-standard --deduplicate "." |
             grep -z -E "$filePathRegex" |
             "${excludes[@]}" |
             xargs -0 stat --printf '%n\0' 2>/dev/null
