@@ -18,7 +18,7 @@ function help() {
     printError "Usage:" \
         "  [--force]                      : Force the format." \
         "  [--exclude-regex <regex> ]     : Exclude file with this regex." \
-        "  [--glob-pattern <pattern>]     : Regex pattern to include files." \
+        "  [--regex-pattern <pattern>]    : Regex pattern to include files." \
         "   --dir <path>                  : In which directory to format files."
 }
 
@@ -54,6 +54,8 @@ function parseArgs() {
 }
 
 parseArgs "$@"
+
+[ -d "$dir" ] || die "Directory '$dir' does not exist."
 
 if [ "$dryRun" = "false" ]; then
     assertShellFormatVersion "3.4.0" "9.9.99"
