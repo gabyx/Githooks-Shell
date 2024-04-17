@@ -69,6 +69,5 @@ parallelForDir formatShellFile \
     "$dir" \
     "$regex" \
     "$excludeRegex" \
-    "$dryRun" \
-    "shfmt" ||
+    "$dryRun" ||
     die "Formatting in '$dir' with '$regex'."

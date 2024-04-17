@@ -69,8 +69,7 @@ parallelForDir checkShellFile \
     "$dir" \
     "$regex" \
     "$excludeRegex" \
-    "$dryRun" \
-    "shellcheck" ||
+    "$dryRun" ||
     die "Checking in '$dir' with '$regex'."
 
 parallelForDir checkShellMistakesFile \
