@@ -36,18 +36,19 @@ if [ $? -ne 0 ] ||
     exit 1
 fi
 
-if ! git diff --quiet; then
-    echo "Expected repository to be not dirty, formatted files are staged in."
+if ! git diff --name-only | grep -q "A1.sh"; then
+    echo "Expected repository to dirty, formatted files are dirty."
     git status
     exit 1
 fi
 
-if ! git diff --quiet --cached; then
+if git diff --name-only --cached | grep -q "A1.sh"; then
     echo "Formatted files are staged but should not."
     git status
     exit 1
 fi
 
+git commit -a --no-verify -m "Check in formatted files." || exit 1
 setupFiles || die "Could not setup files again."
 
 if [ "$(git status --short | grep -c 'A.*')" != "6" ]; then
