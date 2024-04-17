@@ -21,6 +21,3 @@ parallelForFiles formatShellFile \
     "$regex" \
     "false" \
     "shfmt" || die "Shell format failed."
-
-stageFiles "$PARALLEL_EXECUTED_FILES" ||
-    printError "Could not stage formatted files."
