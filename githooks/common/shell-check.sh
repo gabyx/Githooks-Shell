@@ -29,8 +29,8 @@ function assertShellCheckVersion() {
 
 # Check a shell file inplace.
 function checkShellFile() {
-    local shellcheckExe="$1"
-    local file="$2"
+    local file="$1"
+    local shellcheckExe="${2:-shellcheck}"
 
     printInfo " ✔️ Checking file: '$file'"
     "$shellcheckExe" -e SC1071 "$file" 1>&2 ||

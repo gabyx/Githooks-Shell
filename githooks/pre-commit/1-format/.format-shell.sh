@@ -19,5 +19,4 @@ regex=$(getGeneralShellFileRegex) || die "Could not get shell file regex."
 parallelForFiles formatShellFile \
     "$STAGED_FILES" \
     "$regex" \
-    "false" \
-    "shfmt" || die "Shell format failed."
+    "false" || die "Shell format failed."

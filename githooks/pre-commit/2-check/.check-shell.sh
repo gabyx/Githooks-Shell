@@ -19,5 +19,4 @@ regex=$(getGeneralShellFileRegex) || die "Could not get shell file regex."
 parallelForFiles checkShellFile \
     "$STAGED_FILES" \
     "$regex" \
-    "false" \
-    "shellcheck" || die "Shell check failed."
+    "false" || die "Shell check failed."

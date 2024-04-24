@@ -29,8 +29,8 @@ function assertShellFormatVersion() {
 
 # Format a shell file inplace.
 function formatShellFile() {
-    local shellformatExe="$1"
-    local file="$2"
+    local file="$1"
+    local shellformatExe="${2:-shfmt}"
 
     printInfo " - ✍ Formatting file: '$file'"
     "$shellformatExe" -w -i 4 "$file" 1>&2 ||
