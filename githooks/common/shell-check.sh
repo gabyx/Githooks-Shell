@@ -52,7 +52,7 @@ function checkShellMistakesFile() {
     fi
 
     if grep -qnrHE "set\s+[-+][a-z]*x" "$file"; then
-        # Ugly writting to pass 'seT -x' check.
+        # Ugly writing to pass 'seT -x' check.
         msg="Detected 'set"
         msg="$msg -x' in '$file'. This is wrong."
         printError "$msg"
